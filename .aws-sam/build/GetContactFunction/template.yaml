@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Smart Contact Lookup API
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs22.x 
+    MemorySize: 128
+
+Resources:
+  GetContactFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getContactById
+      Handler: src/app.handler
+      CodeUri: .
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-0125bd842461f2a43       
+        SubnetIds:
+          - subnet-01a83dee514424c96
+          - subnet-07a8fa4f10c668dfd
+          - subnet-0871c83788d682d4f
+      Environment:
+        Variables:
+          DB_HOST: your-db-host
+          DB_USER: your-user
+          DB_PASSWORD: your-password
+          DB_NAME: UserDatabase
+      Events:
+        ContactAPI:
+          Type: Api
+          Properties:
+            Path: /contact/{id}
+            Method: GET
